@@ -1,0 +1,15 @@
+---
+kind: ImageStream
+apiVersion: v1
+metadata:
+  name: openjdk18-openshift
+spec:
+  dockerImageRepository: registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+  tags:
+  - name: '1.2'
+    annotations:
+      description: OpenJDK S2I images.
+      iconClass: icon-openjdk
+      tags: builder,java,xpaas
+      supports: java:8,xpaas:1.0
+      version: '1.2'
