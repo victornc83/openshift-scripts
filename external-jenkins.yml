@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: List
+metadata:
+  name: external-jenkins
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "jenkins-jnlp", "namespace": "", "kind": "Service"}]'
+      service.openshift.io/infrastructure: "true"
+    labels:
+      app: jenkins-persistent
+      template: jenkins-persistent
+    name: jenkins
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector: {}
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: jenkins-persistent
+      template: jenkins-persistent
+    name: jenkins-jnlp
+  spec:
+    ports:
+    - name: agent
+      port: 50000
+      protocol: TCP
+      targetPort: 50000
+    selector: {}
+  status:
+    loadBalancer: {}
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      template: jenkins-persistent
+      app: jenkins-persistent
+    name: jenkins
+  spec:
+    host: <ip_jenkins_aqui>
+    port:
+      targetPort: web
+    to:
+      kind: Service
+      name: jenkins
+      weight: 100
+    wildcardPolicy: None
